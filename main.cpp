@@ -1,313 +1,152 @@
 #include <iostream>
 #include <Windows.h>
-#include <conio.h>
 #include <ctime>
 
 using namespace std;
 
+// Функція розподілу динамічної пам'яті
 template <typename T>
-T* create_array(size_t size)
-{
+T* allocate_memory(size_t size) {
     return new T[size];
 }
 
+// Функція ініціалізації динамічного масиву
 template <typename T>
-bool fill_array(T* array, size_t size)
-{
-    if (array == nullptr)
-    {
-        return false;
-    }
-    for (size_t i = 0; i < size; i++)
-    {
+void initialize_array(T* array, size_t size) {
+    srand(time(0)); 
+    for (size_t i = 0; i < size; i++) {
         array[i] = rand() % 100;
     }
-    return true;
 }
 
+// Функція друку динамічного масиву
 template <typename T>
-void print_array(T* array, size_t size)
-{
-    for (size_t i = 0; i < size; i++)
-    {
+void print_array(T* array, size_t size) {
+    for (size_t i = 0; i < size; i++) {
         cout << array[i] << " ";
     }
     cout << endl;
 }
 
+// Функція видалення динамічного масиву
 template <typename T>
-bool push_back(T*& array, size_t& size, T value)
-{
-    T* new_array = create_array<T>(size + 1);
-    if (new_array == nullptr)
-    {
+void delete_array(T* array) {
+    delete[] array;
+}
+
+// Функція додавання елемента в кінець масиву
+template <typename T>
+bool push_back(T*& array, size_t& size, T value) {
+    T* new_array = allocate_memory<T>(size + 1);
+    if (new_array == nullptr) {
         return false;
     }
-    for (size_t i = 0; i < size; i++)
-    {
+    for (size_t i = 0; i < size; i++) {
         new_array[i] = array[i];
     }
     new_array[size] = value;
-    delete[] array;
+    delete_array(array);
     array = new_array;
     size++;
     return true;
 }
 
+// Функція вставки елемента за вказаним індексом
 template <typename T>
-bool push_front(T*& array, size_t& size, T value)
-{
-    T* new_array = create_array<T>(size + 1);
-    if (new_array == nullptr)
-    {
+bool insert_element(T*& array, size_t& size, T value, size_t index) {
+    if (index > size) {
         return false;
     }
-    new_array[0] = value;
-    for (size_t i = 0; i < size; i++)
-    {
-        new_array[i + 1] = array[i];
-    }
-    delete[] array;
-    array = new_array;
-    size++;
-    return true;
-}
-
-template <typename T>
-bool insert(T*& array, size_t& size, T value, size_t index)
-{
-    if (index > size)
-    {
+    T* new_array = allocate_memory<T>(size + 1);
+    if (new_array == nullptr) {
         return false;
     }
-    T* new_array = create_array<T>(size + 1);
-    if (new_array == nullptr)
-    {
-        return false;
-    }
-    for (size_t i = 0; i < index; i++)
-    {
+    for (size_t i = 0; i < index; i++) {
         new_array[i] = array[i];
     }
     new_array[index] = value;
-    for (size_t i = index; i < size; i++)
-    {
+    for (size_t i = index; i < size; i++) {
         new_array[i + 1] = array[i];
     }
-    delete[] array;
+    delete_array(array);
     array = new_array;
     size++;
     return true;
 }
 
+// Функція видалення елемента за вказаним індексом
 template <typename T>
-T pop_back(T*& array, size_t& size)
-{
-    if (size == 0)
-    {
-        return T();
+bool delete_element(T*& array, size_t& size, size_t index) {
+    if (index >= size) {
+        return false;
     }
-    T value = array[size - 1];
-    T* new_array = create_array<T>(size - 1);
-    if (new_array == nullptr)
-    {
-        return T();
+    T* new_array = allocate_memory<T>(size - 1);
+    if (new_array == nullptr) {
+        return false;
     }
-    for (size_t i = 0; i < size - 1; i++)
-    {
+    for (size_t i = 0; i < index; i++) {
         new_array[i] = array[i];
     }
-    delete[] array;
-    array = new_array;
-    size--;
-    return value;
-}
-
-template <typename T>
-T pop_front(T*& array, size_t& size)
-{
-    if (size == 0)
-    {
-        return T();
-    }
-    T value = array[0];
-    T* new_array = create_array<T>(size - 1);
-    if (new_array == nullptr)
-    {
-        return T();
-    }
-    for (size_t i = 1; i < size; i++)
-    {
+    for (size_t i = index + 1; i < size; i++) {
         new_array[i - 1] = array[i];
     }
-    delete[] array;
+    delete_array(array);
     array = new_array;
     size--;
-    return value;
+    return true;
 }
 
-template <typename T>
-T erase(T*& array, size_t& size, size_t index)
-{
-    if (index >= size)
-    {
-        return T();
-    }
-    T value = array[index];
-    T* new_array = create_array<T>(size - 1);
-    if (new_array == nullptr)
-    {
-        return T();
-    }
-    for (size_t i = 0; i < index; i++)
-    {
-        new_array[i] = array[i];
-    }
-    for (size_t i = index + 1; i < size; i++)
-    {
-        new_array[i - 1] = array[i];
-    }
-    delete[] array;
-    array = new_array;
-    size--;
-    return value;
-}
-
-
-
-
-int main()
-{
-    srand(time(0));
+int main() {
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
     size_t size;
-    cout << "Enter size of array: ";
+    cout << "Введіть довжину масива: ";
     cin >> size;
-    int* array = create_array<int>(size);
-    int choice;
-    do
-    {
-        system("cls");
-        cout << "1. Fill array" << endl;
-        cout << "2. Print array" << endl;
-        cout << "3. Push back" << endl;
-        cout << "4. Push front" << endl;
-        cout << "5. Insert" << endl;
-        cout << "6. Pop back" << endl;
-        cout << "7. Pop front" << endl;
-        cout << "8. Erase" << endl;
-        cout << "0. Exit" << endl;
-        cout << "Enter your choice: ";
-        cin >> choice;
-        switch (choice)
-        {
-        case 1:
-        {
-            if (fill_array(array, size))
-            {
-                cout << "Array filled" << endl;
-            }
-            else
-            {
-                cout << "Failed to fill array" << endl;
-            }
-        }break;
-        case 2:
-        {
-            print_array(array, size);
-        }break;
-        case 3:
-        {
-            int value;
-            cout << "Enter value: ";
-            cin >> value;
-            if (push_back(array, size, value))
-            {
-                cout << "Value pushed back" << endl;
-            }
-            else
-            {
-                cout << "Failed to push back value" << endl;
-            }
-        }break;
-        case 4:
-        {
-            int value;
-            cout << "Enter value: ";
-            cin >> value;
-            if (push_front(array, size, value))
-            {
-                cout << "Value pushed front" << endl;
-            }
-            else
-            {
-                cout << "Failed to push front value" << endl;
-            }
-        }break;
-        case 5:
-        {
-            int value;
-            size_t index;
-            cout << "Enter value: ";
-            cin >> value;
-            cout << "Enter index: ";
-            cin >> index;
-            if (insert(array, size, value, index))
-            {
-                cout << "Value inserted" << endl;
-            }
-            else
-            {
-                cout << "Failed to insert value" << endl;
-            }
-        }break;
-        case 6:
-        {
-            int value = pop_back(array, size);
-            if (value != 0)
-            {
-                cout << "Value popped back: " << value << endl;
-            }
-            else
-            {
-                cout << "Failed to pop back value" << endl;
-            }
-        }break;
-        case 7:
-        {
-            int value = pop_front(array, size);
-            if (value != 0)
-            {
-                cout << "Value popped front: " << value << endl;
-            }
-            else
-            {
-                cout << "Failed to pop front value" << endl;
-            }
-        }break;
-        case 8:
-        {
-            size_t index;
-            cout << "Enter index: ";
-            cin >> index;
-            int value = erase(array, size, index);
-            if (value != 0)
-            {
-                cout << "Value erased: " << value << endl;
-            }
-            else
-            {
-                cout << "Failed to erase value" << endl;
-            }
-        }break;
-        case 0:
-        {
-            delete[] array;
-            exit(0);
-        }
-        }
-        system("pause");
-    } while (true);
 
-    _getch();
+    // Розподіл та ініціалізація динамічного масиву
+    int* array = allocate_memory<int>(size);
+    initialize_array(array, size);
+
+    // Друкуємо динамічний масив
+    cout << "Масив: ";
+    print_array(array, size);
+
+    // Додавання елемента в кінець масиву
+    int valueToAdd = 99;
+    cout << "Додаємо елемент " << valueToAdd << " в кінець масиву..." << endl;
+    if (push_back(array, size, valueToAdd)) {
+        cout << "Масив після додавання: ";
+        print_array(array, size);
+    }
+    else {
+        cout << "Помилка під час додавання елемента." << endl;
+    }
+
+    // Вставка елемента за вказаним індексом
+    int valueToInsert = 55;
+    size_t indexToInsert = 2;
+    cout << "Вставляємо елемент " << valueToInsert << " за індексом " << indexToInsert << "..." << endl;
+    if (insert_element(array, size, valueToInsert, indexToInsert)) {
+        cout << "Масив після вставки: ";
+        print_array(array, size);
+    }
+    else {
+        cout << "Помилка під час вставки елемента." << endl;
+    }
+
+    // Видалення елемента за вказаним індексом
+    size_t indexToDelete = 1;
+    cout << "Видаляємо елемент за індексом " << indexToDelete << "..." << endl;
+    if (delete_element(array, size, indexToDelete)) {
+        cout << "Масив після видалення: ";
+        print_array(array, size);
+    }
+    else {
+        cout << "Помилка під час видалення елемента." << endl;
+    }
+
+    // Звільнення пам'яті, яка була виділена для масиву
+    delete_array(array);
+
     return 0;
 }
