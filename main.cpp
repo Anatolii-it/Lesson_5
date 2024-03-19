@@ -24,7 +24,6 @@ void select(int* array, int size) {
         }
     }
 
-    // Виведення результатів
     std::cout << "Додатні елементи: ";
     for (int i = 0; i < k_dod; i++) {
         std::cout << dod[i] << " ";
@@ -43,7 +42,6 @@ void select(int* array, int size) {
     }
     std::cout << std::endl;
 
-    // Звільнення пам'яті
     delete[] dod;
     delete[] vid;
     delete[] zero;
