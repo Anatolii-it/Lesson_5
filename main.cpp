@@ -9,7 +9,6 @@ void split_array(int* array, size_t size, int*& positive_array, size_t& positive
     size_t negative = 0;
     size_t zero = 0;
 
-    
     for (size_t i = 0; i < size; i++) {
         if (array[i] > 0) {
             positive++;
@@ -22,7 +21,6 @@ void split_array(int* array, size_t size, int*& positive_array, size_t& positive
         }
     }
 
-    
     positive_size = positive;
     negative_size = negative;
     zero_size = zero;
@@ -31,7 +29,6 @@ void split_array(int* array, size_t size, int*& positive_array, size_t& positive
     negative_array = new int[negative_size];
     zero_array = new int[zero_size];
 
-   
     size_t positive_index = 0;
     size_t negative_index = 0;
     size_t zero_index = 0;
