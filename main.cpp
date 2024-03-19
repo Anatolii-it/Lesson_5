@@ -35,7 +35,7 @@ int main() {
 
     cout << "  Негативних чисел: " << negativ << endl;
     cout << "  Позитивних чисел: " << positive << endl;
-    cout << "Нуль зустричається: " << zero << endl;
+    cout << "Нуль зустрічається: " << zero << endl;
 
     _getch();
     return 0;
